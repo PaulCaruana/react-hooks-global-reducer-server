@@ -1,0 +1,45 @@
+{
+  "name": "react-hooks-global-reducer",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.9.12",
+    "@material-ui/icons": "^4.9.1",
+    "axios": "^0.19.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hooks-global-state": "^1.0.0",
+    "react-scripts": "3.4.1",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
+  },
+  "devDependencies": {
+    "faker": "^4.1.0",
+    "json-server": "^0.16.1",
+    "lodash": "^4.17.15"
+  },
+  "scripts": {
+    "start": "REACT_APP_SERVER_ENDPOINT=//localhost:5000 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "fakeServer": "json-server --delay=0 --watch serverFake/generateData.js --port 5000",
+    "dev": "yarn fakeServer & yarn start"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
