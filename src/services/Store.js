@@ -11,12 +11,19 @@ const reducer = combineReducers({
     user: userReducer,
 });
 const initialState = {count: counterInitialState, user: userInitialState};
+const middleware = [];
+const enhancers = [];
+
+if ( process.env.NODE_ENV === 'development') {
+    middleware.push(reduxLogger);
+    enhancers.push(reduxDevToolsExt());
+}
+
+middleware.unshift(reduxThunk)
+enhancers.unshift(applyMiddleware(...middleware) )
 
 export const {dispatch, useGlobalState} = createStore(
     reducer,
     initialState,
-    compose(
-        applyMiddleware(reduxThunk, reduxLogger),
-        reduxDevToolsExt(),
-    ),
+    compose(...enhancers)
 );

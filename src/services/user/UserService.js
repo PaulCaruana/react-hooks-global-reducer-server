@@ -6,7 +6,7 @@ class UserService extends RestService {
     async createData(options) {
         const {data: user} = options;
         const candidate = `${user.lastName.toLowerCase()}${user.firstName.charAt(0).toLowerCase()}`;
-        user.username = await this.getUsername(candidate);
+        user.username = await this.generateUsername(candidate);
         return super.createData(options);
     }
 
@@ -14,7 +14,7 @@ class UserService extends RestService {
     async updateData(id, options) {
         const {data: user} = options;
         const candidate = user.username;
-        const username = await this.getUsername(candidate);
+        const username = await this.generateUsername(candidate);
         if (candidate !== username) {
             throw new Error(`'${candidate}' user name already exists. Try '${username}' instead`)
         }
@@ -22,7 +22,7 @@ class UserService extends RestService {
     }
 
 
-    async getUsername(candidate) {
+    async generateUsername(candidate) {
         const response = await this.fetchData();
         const users = response.data;
         const matchingUsers = users.filter((user) => user.username.startsWith(candidate));
@@ -45,6 +45,9 @@ class UserService extends RestService {
     }
 }
 
-const userGateway = RestGateway(`${process.env.REACT_APP_SERVER_ENDPOINT}/users`);
-const {useService} = new UserService("user", userGateway);
-export default useService;
+const host = process.env.REACT_APP_SERVER_ENDPOINT || "http://localhost:5000";
+const userGateway = RestGateway(`${host}/users`);
+export const userService = new UserService("user", userGateway);
+const {useService : useUserService} = userService
+export default useUserService;
+
