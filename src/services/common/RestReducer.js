@@ -1,0 +1,141 @@
+const restReducer = (resource, key = "id") => {
+    const initialState = {
+        fetching: false,
+        creating: false,
+        reading: false,
+        updating: false,
+        deleting: false,
+        completed: false,
+        mode: false,
+        items: [],
+        error: null
+    }
+
+    const isMatch = (item, id) => {
+        if (id === undefined) {
+            throw new Error("Action must contain id");
+        }
+        const itemId = item.id;
+        if (itemId === undefined) {
+            throw new Error("Item key not found");
+        }
+        return itemId.toString() === id.toString();
+    };
+
+    const deleteItem = (items, id) => {
+        const deleteIndex = items.findIndex(current => isMatch(current, id));
+        if (deleteIndex === -1) {
+            return items;
+        }
+        const results = [
+            ...items.slice(0, deleteIndex),
+            ...items.slice(deleteIndex + 1)
+        ];
+        return results;
+    };
+
+    const reducer = (state = initialState, action) => {
+        const {type, items: nextItems, id, item, error} = action;
+        const {items: currentItems} = state;
+        const baseState = {...state, completed: false, error: null}
+        switch (type) {
+        case "fetching" :
+            return {
+                ...baseState,
+                currentItem: null,
+                fetching: true
+            }
+        case "fetched" :
+            return {
+                ...baseState,
+                items: [...nextItems],
+                hasItems: nextItems && nextItems.length > 0,
+                fetching: false,
+                completed: true,
+            }
+        case "mode" :
+            return {
+                ...state,
+                modeType: action.mode,
+            }
+        case "selected" :
+            return {
+                ...state,
+                selected: currentItems.find(current => isMatch(current, id)),
+            }
+        case "clearSelected" :
+            return {
+                ...state,
+                selected: null,
+            }
+        case "creating":
+            return {
+                ...baseState,
+                creating: true,
+            }
+        case "created":
+            return {
+                ...baseState,
+                items: [
+                    item,
+                    ...currentItems,
+                ],
+                hasItems: true,
+                currentItem: item,
+                creating: false,
+                completed: true,
+            }
+        case "reading":
+            return {
+                ...baseState,
+                reading: true,
+            }
+        case "read":
+            return {
+                ...baseState,
+                items: currentItems.map(current => (isMatch(current, id) ? item : current)),
+                currentItem: item,
+                reading: false,
+                completed: true,
+            }
+        case "updating":
+            return {
+                ...baseState,
+                updating: true,
+            };
+        case "updated":
+            return {
+                ...baseState,
+                items: currentItems.map(current => (isMatch(current, id) ? item : current)),
+                currentItem: item,
+                updating: false,
+                completed: true,
+            };
+        case "deleting":
+            return {
+                ...baseState,
+                deleting: true,
+            };
+        case "deleted":
+            return {
+                ...baseState,
+                items: deleteItem(currentItems, id),
+                currentItem: null,
+                hasItems: currentItems && currentItems.length > 1,
+                deleting: false,
+                completed: true,
+            };
+        case "error" :
+            return {
+                ...initialState,
+                error
+            }
+        default:
+            return state;
+        }
+
+    }
+
+    return {reducer, initialState};
+}
+export default restReducer;

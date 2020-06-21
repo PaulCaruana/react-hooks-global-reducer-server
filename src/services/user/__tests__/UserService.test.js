@@ -24,9 +24,9 @@ describe('User Service', () => {
         act(() => {
             result.current.fetchUsers();
         })
-        expect(result.current.fetchingUsers).toBe(true);
+        expect(result.current.fetching).toBe(true);
         await waitForNextUpdate();
-        expect(result.current.fetchingUsers).toBe(false);
+        expect(result.current.fetching).toBe(false);
         expect(result.current.users).toEqual(sampleUsers)
     });
 
@@ -36,8 +36,13 @@ describe('User Service', () => {
     })
 
     test("should generate correct duplicate user name", async () => {
-        const username = await userService.generateUsername("hiltonp");
+        const username = await userService.generateUsername("hiltonp", 0);
         expect(username).toBe("hiltonp2");
+    })
+
+    test("should generate the same user name excluding same record", async () => {
+        const username = await userService.generateUsername("hiltonp", 7);
+        expect(username).toBe("hiltonp");
     })
 
     test("should generate correct user name when multiple", async () => {

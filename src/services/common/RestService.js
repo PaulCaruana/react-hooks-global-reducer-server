@@ -1,21 +1,23 @@
 import { dispatch, useGlobalState } from "../Store";
 
 export default class RestService {
-    constructor(resource, gateway, itemName, itemNames) {
+    constructor(resource, gateway, itemName, itemsName) {
         this.resource = resource;
-        const item = itemName || resource.charAt(0).toUpperCase() + resource.slice(1);
-        const items = itemNames || `${item}s`;
+        itemName = itemName || resource.charAt(0).toUpperCase() + resource.slice(1); //User
+        itemsName = itemsName || `${itemName}s`; //Users
+        const resourcesName = itemsName.toLowerCase(); //users
+        this.names = {itemName, itemsName, resourcesName};
         this.gateway = gateway;
         this.useService = this.useService.bind(this);
         this.actions = {
-            [`fetch${items}`]: this.fetchItems.bind(this),
-            [`refetch${items}`]: () => this.fetchItems(this.fetchOptions),
-            [`add${item}`]: this.addItem.bind(this),
-            [`edit${item}`]: this.editItem.bind(this),
-            [`create${item}`]: this.createItem.bind(this),
-            [`read${item}`]: this.readItem.bind(this),
-            [`update${item}`]: this.updateItem.bind(this),
-            [`delete${item}`]: this.deleteItem.bind(this),
+            [`fetch${itemsName}`]: this.fetchItems.bind(this),
+            [`refetch${itemsName}`]: () => this.fetchItems(this.fetchOptions),
+            [`add${itemName}`]: this.addItem.bind(this),
+            [`edit${itemName}`]: this.editItem.bind(this),
+            [`create${itemName}`]: this.createItem.bind(this),
+            [`read${itemName}`]: this.readItem.bind(this),
+            [`update${itemName}`]: this.updateItem.bind(this),
+            [`delete${itemName}`]: this.deleteItem.bind(this),
             afterChange: this.afterChange.bind(this),
             mode: this.mode,
         }
@@ -23,8 +25,16 @@ export default class RestService {
 
     useService() {
         const [state] = useGlobalState(this.resource);
-        this.state = state;
-        return {...state, ...this.actions};
+        const {itemName, itemsName, resourcesName} = this.names;
+        this.state = {
+            ...state,
+            [resourcesName]: state.items,
+            [`has${itemsName}`]: state.hasItems,
+            [`current${itemName}`]: state.currentItem,
+            ...this.actions
+        }
+        console.log(this.state)
+        return this.state;
     }
 
     async fetchItems(options) {
@@ -32,7 +42,7 @@ export default class RestService {
         try {
             const response = await this.fetchData(options);
             this.fetchOptions = options;
-            dispatch({type: "fetched", users: response.data});
+            dispatch({type: "fetched", items: response.data});
         } catch (e) {
             this.reportError(e);
         }
@@ -55,7 +65,7 @@ export default class RestService {
         dispatch({type: "creating"});
         try {
             const response = await this.createData(options);
-            dispatch({type: "created", user: response.data});
+            dispatch({type: "created", item: response.data});
             this.afterChange("created");
         } catch (e) {
             this.reportError(e);
@@ -70,7 +80,7 @@ export default class RestService {
         dispatch({type: "updating"});
         try {
             const response = await this.updateData(id, options);
-            dispatch({type: "updated", id, user: response.data});
+            dispatch({type: "updated", id, item: response.data});
             this.afterChange("updated");
         } catch (e) {
             this.reportError(e);
@@ -81,7 +91,7 @@ export default class RestService {
         dispatch({type: "reading"});
         try {
             const response = await this.readData(id, options);
-            dispatch({type: "read", id, user: response.data});
+            dispatch({type: "read", id, item: response.data});
         } catch (e) {
             this.reportError(e);
         }
@@ -99,7 +109,7 @@ export default class RestService {
         dispatch({type: "deleting"});
         try {
             const response = await this.deleteData(id, options);
-            dispatch({type: "deleted", id, user: response.data});
+            dispatch({type: "deleted", id, item: response.data});
             this.afterChange("deleted");
         } catch (e) {
             this.reportError(e);
@@ -114,11 +124,11 @@ export default class RestService {
     }
 
     mode = {
-        isAdd: () => this.state.mode === "add",
+        isAdd: () => this.state.modeType === "add",
         setAdd: () => dispatch({type: "mode", mode: "add"}),
-        isEdit: () => this.state.mode === "edit",
+        isEdit: () => this.state.modeType === "edit",
         setEdit: () => dispatch({type: "mode", mode: "edit"}),
-        isInitial: () => this.state.mode === "initial",
+        isInitial: () => this.state.modeType === "initial",
         setInitial: () => dispatch({type: "mode", mode: "initial"}),
     }
 

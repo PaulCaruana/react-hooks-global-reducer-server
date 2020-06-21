@@ -14,29 +14,32 @@ class UserService extends RestService {
     async updateData(id, options) {
         const {data: user} = options;
         const candidate = user.username;
-        const username = await this.generateUsername(candidate);
-        if (candidate !== username) {
+        const username = await this.generateUsername(candidate, id);
+        if (candidate !== username ) {
             throw new Error(`'${candidate}' user name already exists. Try '${username}' instead`)
         }
         return super.updateData(id, options);
     }
 
 
-    async generateUsername(candidate) {
+    async generateUsername(candidate, excludeId) {
         const response = await this.fetchData();
         const users = response.data;
-        const matchingUsers = users.filter((user) => user.username.startsWith(candidate));
-        if (matchingUsers.length === 0) {
+        let found = users.some((user) =>
+            user.username === candidate && user.id !== excludeId
+        );
+        if (!found) {
             return candidate;
         }
-        const matchingUsernames = matchingUsers.map((user) => user.username);
         let cnt = 1;
-        let username = candidate;
-        while (matchingUsernames.indexOf(username) > -1) {
+        for (let i = 0; found; i++) {
             cnt++;
-            username = candidate + cnt;
+            const username= candidate + cnt;
+            found = users.some((user) =>
+                user.username === username && user.id !== excludeId
+            );
         }
-        return username;
+        return candidate + cnt;
     }
 
     afterChange(eventType) {
