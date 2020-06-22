@@ -1,4 +1,4 @@
-const restReducer = (resource, key = "id") => {
+const restReducer = (key = "id") => {
     const initialState = {
         fetching: false,
         creating: false,
@@ -15,7 +15,7 @@ const restReducer = (resource, key = "id") => {
         if (id === undefined) {
             throw new Error("Action must contain id");
         }
-        const itemId = item.id;
+        const itemId = item[key];
         if (itemId === undefined) {
             throw new Error("Item key not found");
         }
@@ -42,6 +42,7 @@ const restReducer = (resource, key = "id") => {
         case "fetching" :
             return {
                 ...baseState,
+                hasItems: currentItems && currentItems.length > 0,
                 currentItem: null,
                 fetching: true
             }
@@ -88,6 +89,7 @@ const restReducer = (resource, key = "id") => {
         case "reading":
             return {
                 ...baseState,
+                currentItem: currentItems.find(current => (isMatch(current, id) ? item : current)),
                 reading: true,
             }
         case "read":
@@ -114,14 +116,13 @@ const restReducer = (resource, key = "id") => {
         case "deleting":
             return {
                 ...baseState,
+                items: deleteItem(currentItems, id),
+                get hasItems() {return this.items && this.items.length > 0},
                 deleting: true,
             };
         case "deleted":
             return {
                 ...baseState,
-                items: deleteItem(currentItems, id),
-                currentItem: null,
-                hasItems: currentItems && currentItems.length > 1,
                 deleting: false,
                 completed: true,
             };

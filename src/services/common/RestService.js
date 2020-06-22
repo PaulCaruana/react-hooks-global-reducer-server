@@ -11,14 +11,14 @@ export default class RestService {
         this.useService = this.useService.bind(this);
         this.actions = {
             [`fetch${itemsName}`]: this.fetchItems.bind(this),
-            [`refetch${itemsName}`]: () => this.fetchItems(this.fetchOptions),
+            [`refetch${itemsName}`]: (silent) => this.fetchItems(this.fetchOptions, silent),
             [`add${itemName}`]: this.addItem.bind(this),
             [`edit${itemName}`]: this.editItem.bind(this),
             [`create${itemName}`]: this.createItem.bind(this),
             [`read${itemName}`]: this.readItem.bind(this),
             [`update${itemName}`]: this.updateItem.bind(this),
             [`delete${itemName}`]: this.deleteItem.bind(this),
-            afterChange: this.afterChange.bind(this),
+            afterChange: this.afterChangeItem.bind(this),
             mode: this.mode,
         }
     }
@@ -33,12 +33,13 @@ export default class RestService {
             [`current${itemName}`]: state.currentItem,
             ...this.actions
         }
-        console.log(this.state)
         return this.state;
     }
 
-    async fetchItems(options) {
-        dispatch({type: "fetching"});
+    async fetchItems(options, silent) {
+        if (!silent) {
+            dispatch({type: "fetching"});
+        }
         try {
             const response = await this.fetchData(options);
             this.fetchOptions = options;
@@ -66,7 +67,7 @@ export default class RestService {
         try {
             const response = await this.createData(options);
             dispatch({type: "created", item: response.data});
-            this.afterChange("created");
+            this.afterChangeItem("created");
         } catch (e) {
             this.reportError(e);
         }
@@ -76,19 +77,8 @@ export default class RestService {
         return this.gateway.createItem(options);
     }
 
-    async updateItem(id, options) {
-        dispatch({type: "updating"});
-        try {
-            const response = await this.updateData(id, options);
-            dispatch({type: "updated", id, item: response.data});
-            this.afterChange("updated");
-        } catch (e) {
-            this.reportError(e);
-        }
-    }
-
     async readItem(id, options) {
-        dispatch({type: "reading"});
+        dispatch({type: "reading", id});
         try {
             const response = await this.readData(id, options);
             dispatch({type: "read", id, item: response.data});
@@ -101,16 +91,27 @@ export default class RestService {
         return this.gateway.readItem(id, options);
     }
 
+    async updateItem(id, options) {
+        dispatch({type: "updating"});
+        try {
+            const response = await this.updateData(id, options);
+            dispatch({type: "updated", id, item: response.data});
+            this.afterChangeItem("updated");
+        } catch (e) {
+            this.reportError(e);
+        }
+    }
+
     updateData(id, options) {
         return this.gateway.updateItem(id, options);
     }
 
     async deleteItem(id, options) {
-        dispatch({type: "deleting"});
+        dispatch({type: "deleting", id});
         try {
             const response = await this.deleteData(id, options);
             dispatch({type: "deleted", id, item: response.data});
-            this.afterChange("deleted");
+            this.afterChangeItem("deleted");
         } catch (e) {
             this.reportError(e);
         }
@@ -120,8 +121,7 @@ export default class RestService {
         return this.gateway.deleteItem(id, options);
     }
 
-    afterChange(eventType) {
-    }
+    afterChangeItem(eventType) {}
 
     mode = {
         isAdd: () => this.state.modeType === "add",

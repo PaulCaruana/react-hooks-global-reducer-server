@@ -3,10 +3,10 @@ import { applyMiddleware, combineReducers, compose } from 'redux';
 import reduxLogger from 'redux-logger';
 import reduxThunk from 'redux-thunk';
 import counterReducer, {initialState as counterInitialState} from "./counter/CounterReducer";
-import restReducer from "./common/RestReducer";
+import restReducerNoOpt from "./common/RestReducer";
 
 
-const {reducer: userReducer, initialState: userInitialState} = restReducer();
+const {reducer: userReducer, initialState: userInitialState} = restReducerNoOpt();
 
 const reducer = combineReducers({
     count: counterReducer,

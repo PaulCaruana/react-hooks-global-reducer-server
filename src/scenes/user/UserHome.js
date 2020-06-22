@@ -7,7 +7,7 @@ import UserEdit from "./UserEdit";
 
 export default function List(props) {
     const {
-        mode, fetchUsers, fetchingUsers, hasUsers, completed, addUser, editUser,
+        mode, fetchUsers, fetching, hasUsers, completed, addUser, editUser,
         createUser, updateUser, deleteUser, users, currentUser, error
     } = useUserService();
 
@@ -20,9 +20,10 @@ export default function List(props) {
     if (error) {
         return <div>Error: {error}, please reload</div>;
     }
-    if (fetchingUsers) {
+    if (fetching) {
         return <div>Loading...</div>;
     }
+    console.log(hasUsers)
     if (completed && !hasUsers) {
         return <div>No users found</div>;
     }

@@ -34,7 +34,7 @@ class UserService extends RestService {
         let cnt = 1;
         for (let i = 0; found; i++) {
             cnt++;
-            const username= candidate + cnt;
+            const username = candidate + cnt;
             found = users.some((user) =>
                 user.username === username && user.id !== excludeId
             );
@@ -42,9 +42,9 @@ class UserService extends RestService {
         return candidate + cnt;
     }
 
-    afterChange(eventType) {
+    afterChangeItem(eventType) {
         this.mode.setInitial();
-        this.actions.refetchUsers();
+        this.actions.refetchUsers(true);
     }
 }
 
