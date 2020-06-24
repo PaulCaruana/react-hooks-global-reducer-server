@@ -13,6 +13,7 @@ import Edit from "@material-ui/icons/Edit";
 import Delete from "@material-ui/icons/Delete";
 import Undo from "@material-ui/icons/Undo";
 import Refresh from "@material-ui/icons/Refresh";
+import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles({
@@ -21,22 +22,31 @@ const useStyles = makeStyles({
     },
 });
 
-const UserTable = ({users, refetchUsers, addUser, editUser, deleteUser, undoUser, undoUserExists}) => {
+const UserTable = ({
+        users, refetchUsers, addUser, editUser, deleteUser, undoUser, hasUsers
+    }) => {
     const classes = useStyles();
+    const title = (hasUsers)? "Users" : "No users found";
 
     return (
         <TableContainer className={classes.table} component={Paper}>
             <Box display="flex" p={1} bgcolor="background.paper" >
                 <Box p={1} flexGrow={1}>
-                    <h3>User list</h3>
+                    <h3>{title}</h3>
                 </Box>
                 <Box p={1} alignSelf="center">
-                    <IconButton color="primary" onClick={refetchUsers}><Refresh/></IconButton>
-                    {undoUserExists && <IconButton color="primary" onClick={undoUser}><Undo/></IconButton>}
-                    <IconButton color="primary" onClick={addUser}><Add/></IconButton>
+                    <Tooltip title="Refresh users" aria-label="refresh">
+                        <IconButton color="primary" onClick={refetchUsers}><Refresh/></IconButton>
+                    </Tooltip>
+                    {undoUser && <Tooltip title="Undo last change" aria-label="undo">
+                        <IconButton color="primary" onClick={undoUser}><Undo/></IconButton>
+                    </Tooltip>}
+                    <Tooltip title="Add user" aria-label="add">
+                        <IconButton color="primary" onClick={addUser}><Add/></IconButton>
+                    </Tooltip>
                 </Box>
             </Box>
-            <Table aria-label="simple table">
+            {hasUsers && <Table aria-label="simple table">
                 <TableHead>
                     <TableRow>
                         <TableCell><b>Remove</b></TableCell>
@@ -61,7 +71,7 @@ const UserTable = ({users, refetchUsers, addUser, editUser, deleteUser, undoUser
                         </TableRow>
                     ))}
                 </TableBody>
-            </Table>
+            </Table>}
         </TableContainer>
     );
 };

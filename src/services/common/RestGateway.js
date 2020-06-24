@@ -13,6 +13,8 @@ const RestGateway = (endPoint) => {
 
     const createItem = async (options) => {
         const {body} = options;
+        body.updatedAt = Date.now();
+        body.createdAt = Date.now();
         const config = {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
@@ -24,6 +26,7 @@ const RestGateway = (endPoint) => {
 
     const updateItem = async (id, options) => {
         const {body} = options;
+        body.updatedAt = Date.now();
         const config = {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",

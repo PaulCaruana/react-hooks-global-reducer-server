@@ -2,11 +2,19 @@ import RestService from "../common/RestService";
 import RestGateway from "../common/RestGateway";
 
 class UserService extends RestService {
+    async fetchData(options) {
+        const response = await super.fetchData();
+        const users = response.data || [];
+        users.sort((a, b) => b.updatedAt - a.updatedAt);
+        console.log(users)
+        return response;
+    }
 
     async createData(options) {
         const {body: user} = options;
         const candidate = user.username ||
-            `${user.lastName.toLowerCase()}${user.firstName.charAt(0).toLowerCase()}`;
+            `${user.lastName.toLowerCase()}${user.firstName.charAt(0).toLowerCase()}`
+                .replace(/[^a-zA-Z0-9]/g, "");
         user.username = await this.generateUsername(candidate);
         return super.createData(options);
     }
@@ -24,7 +32,7 @@ class UserService extends RestService {
 
 
     async generateUsername(candidate, excludeId) {
-        const response = await this.fetchData();
+        const response = await super.fetchData();
         const users = response.data;
         let found = users.some((user) =>
             user.username === candidate && user.id !== excludeId

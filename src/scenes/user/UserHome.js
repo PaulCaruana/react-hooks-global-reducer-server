@@ -23,9 +23,6 @@ export default function List(props) {
     if (fetching) {
         return <div>Loading...</div>;
     }
-    if (completed && !hasUsers) {
-        return <div>No users found</div>;
-    }
 
     return (
         <Box display="flex" p={1} bgcolor="background.paper">
@@ -36,8 +33,8 @@ export default function List(props) {
                     addUser={addUser}
                     editUser={editUser}
                     deleteUser={deleteUser}
-                    undoUser={undoUser}
-                    undoUserExists={undoUserExists}
+                    undoUser={undoUserExists && undoUser}
+                    hasUsers={!completed || hasUsers}
                 />
             </Box>
             <Box p={1} flex={1}>
