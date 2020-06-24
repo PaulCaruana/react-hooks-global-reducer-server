@@ -5,7 +5,8 @@ class UserService extends RestService {
 
     async createData(options) {
         const {body: user} = options;
-        const candidate = `${user.lastName.toLowerCase()}${user.firstName.charAt(0).toLowerCase()}`;
+        const candidate = user.username ||
+            `${user.lastName.toLowerCase()}${user.firstName.charAt(0).toLowerCase()}`;
         user.username = await this.generateUsername(candidate);
         return super.createData(options);
     }
@@ -15,7 +16,7 @@ class UserService extends RestService {
         const {body: user} = options;
         const candidate = user.username;
         const username = await this.generateUsername(candidate, id);
-        if (candidate !== username ) {
+        if (candidate !== username) {
             throw new Error(`'${candidate}' user name already exists. Try '${username}' instead`)
         }
         return super.updateData(id, options);
@@ -44,13 +45,15 @@ class UserService extends RestService {
 
     afterChangeItem(eventType) {
         this.mode.setInitial();
-        this.actions.refetchUsers(true);
+        if (eventType !== "deleted") {
+            this.actions.refetchUsers();
+        }
     }
 }
 
 const host = process.env.REACT_APP_SERVER_ENDPOINT || "http://localhost:5000";
 const userGateway = RestGateway(`${host}/users`);
 export const userService = new UserService("user", userGateway);
-const {useService : useUserService} = userService
+const {useService: useUserService} = userService
 export default useUserService;
 

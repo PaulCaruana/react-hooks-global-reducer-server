@@ -7,8 +7,8 @@ import UserEdit from "./UserEdit";
 
 export default function List(props) {
     const {
-        mode, fetchUsers, fetching, hasUsers, completed, addUser, editUser,
-        createUser, updateUser, deleteUser, users, currentUser, error
+        mode, fetchUsers, refetchUsers, fetching, hasUsers, completed, addUser, editUser,
+        createUser, updateUser, deleteUser, undoUser, undoUserExists, users, currentUser, error
     } = useUserService();
 
     useEffect(() => {
@@ -31,7 +31,13 @@ export default function List(props) {
         <Box display="flex" p={1} bgcolor="background.paper">
             <Box p={1} flex={1}>
                 <UserTable
-                    users={users} addUser={addUser} editUser={editUser} deleteUser={deleteUser}
+                    users={users}
+                    refetchUsers={refetchUsers}
+                    addUser={addUser}
+                    editUser={editUser}
+                    deleteUser={deleteUser}
+                    undoUser={undoUser}
+                    undoUserExists={undoUserExists}
                 />
             </Box>
             <Box p={1} flex={1}>

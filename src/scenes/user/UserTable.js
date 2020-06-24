@@ -11,8 +11,9 @@ import Box from '@material-ui/core/Box';
 import Add from "@material-ui/icons/Add";
 import Edit from "@material-ui/icons/Edit";
 import Delete from "@material-ui/icons/Delete";
+import Undo from "@material-ui/icons/Undo";
+import Refresh from "@material-ui/icons/Refresh";
 import IconButton from "@material-ui/core/IconButton";
-//import {mode} from "../../services/user/UserReducer";
 
 const useStyles = makeStyles({
     table: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
     },
 });
 
-const UserTable = ({users, mode, addUser, editUser, deleteUser}) => {
+const UserTable = ({users, refetchUsers, addUser, editUser, deleteUser, undoUser, undoUserExists}) => {
     const classes = useStyles();
 
     return (
@@ -30,6 +31,8 @@ const UserTable = ({users, mode, addUser, editUser, deleteUser}) => {
                     <h3>User list</h3>
                 </Box>
                 <Box p={1} alignSelf="center">
+                    <IconButton color="primary" onClick={refetchUsers}><Refresh/></IconButton>
+                    {undoUserExists && <IconButton color="primary" onClick={undoUser}><Undo/></IconButton>}
                     <IconButton color="primary" onClick={addUser}><Add/></IconButton>
                 </Box>
             </Box>

@@ -32,6 +32,7 @@ export default class RestService {
             [resourcesName]: state.items,
             [`has${itemsName}`]: state.hasItems,
             [`current${itemName}`]: state.currentItem,
+            [`undo${itemName}Exists`]: state.undoItem !== null,
             ...this.actions
         }
         return this.state;

@@ -8,6 +8,7 @@ const restReducer = (key = "id") => {
         completed: false,
         mode: false,
         items: [],
+        undoItem: null,
         error: null
     }
 
@@ -129,8 +130,8 @@ const restReducer = (key = "id") => {
         case "updated":
             return {
                 ...baseState,
+                undoItem: loadUndoItem("updated", id, findItem(currentItems, id), payload),
                 items: currentItems.map(current => (isMatch(current, id) ? item : current)),
-                undoItem: loadUndoItem("updated", id, item, payload),
                 currentItem: item,
                 updating: false,
                 completed: true,
