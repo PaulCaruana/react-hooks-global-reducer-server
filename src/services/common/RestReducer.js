@@ -22,6 +22,10 @@ const restReducer = (key = "id") => {
         return itemId.toString() === id.toString();
     };
 
+    const findItem = (items, id) => {
+        return items.find(current => isMatch(current, id));
+    }
+
     const deleteItem = (items, id) => {
         const deleteIndex = items.findIndex(current => isMatch(current, id));
         if (deleteIndex === -1) {
@@ -34,8 +38,24 @@ const restReducer = (key = "id") => {
         return results;
     };
 
+    const loadUndoItem = (eventType, id, item, payload) => {
+        const restoreTypes = {
+            created: "deleteItem",
+            updated: "updateItem",
+            deleted: "createItem"
+        };
+        const origPayload = payload || {};
+        return {
+            eventType,
+            restoreType: restoreTypes[eventType],
+            id,
+            item,
+            origPayload
+        };
+    }
+
     const reducer = (state = initialState, action) => {
-        const {type, items: nextItems, id, item, error} = action;
+        const {type, items: nextItems, id, item, payload, error} = action;
         const {items: currentItems} = state;
         const baseState = {...state, completed: false, error: null}
         switch (type) {
@@ -82,6 +102,7 @@ const restReducer = (key = "id") => {
                     ...currentItems,
                 ],
                 hasItems: true,
+                undoItem: loadUndoItem("created", item[key], item, payload),
                 currentItem: item,
                 creating: false,
                 completed: true,
@@ -109,6 +130,7 @@ const restReducer = (key = "id") => {
             return {
                 ...baseState,
                 items: currentItems.map(current => (isMatch(current, id) ? item : current)),
+                undoItem: loadUndoItem("updated", id, item, payload),
                 currentItem: item,
                 updating: false,
                 completed: true,
@@ -116,6 +138,7 @@ const restReducer = (key = "id") => {
         case "deleting":
             return {
                 ...baseState,
+                undoItem: loadUndoItem("deleted", id, findItem(currentItems, id), payload),
                 items: deleteItem(currentItems, id),
                 get hasItems() {return this.items && this.items.length > 0},
                 deleting: true,

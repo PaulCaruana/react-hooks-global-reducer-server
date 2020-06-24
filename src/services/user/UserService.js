@@ -4,7 +4,7 @@ import RestGateway from "../common/RestGateway";
 class UserService extends RestService {
 
     async createData(options) {
-        const {data: user} = options;
+        const {body: user} = options;
         const candidate = `${user.lastName.toLowerCase()}${user.firstName.charAt(0).toLowerCase()}`;
         user.username = await this.generateUsername(candidate);
         return super.createData(options);
@@ -12,7 +12,7 @@ class UserService extends RestService {
 
 
     async updateData(id, options) {
-        const {data: user} = options;
+        const {body: user} = options;
         const candidate = user.username;
         const username = await this.generateUsername(candidate, id);
         if (candidate !== username ) {

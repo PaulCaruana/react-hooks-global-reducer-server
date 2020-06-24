@@ -29,8 +29,8 @@ const UserEditForm = ({currentUser, updateUser, onCancel}) => {
                     event.preventDefault()
                     if (user.firstName && user.lastName && user.username) {
                         const {id} = user;
-                        const data = {...user};
-                        const payload = {id, data};
+                        const body = {...user};
+                        const payload = {id, body};
                         updateUser(id, payload)
                     }
                 }}

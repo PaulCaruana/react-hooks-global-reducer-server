@@ -18,6 +18,7 @@ export default class RestService {
             [`read${itemName}`]: this.readItem.bind(this),
             [`update${itemName}`]: this.updateItem.bind(this),
             [`delete${itemName}`]: this.deleteItem.bind(this),
+            [`undo${itemName}`]: this.undoItem.bind(this),
             afterChange: this.afterChangeItem.bind(this),
             mode: this.mode,
         }
@@ -66,7 +67,7 @@ export default class RestService {
         dispatch({type: "creating"});
         try {
             const response = await this.createData(options);
-            dispatch({type: "created", item: response.data});
+            dispatch({type: "created", item: response.data, payload: options});
             this.afterChangeItem("created");
         } catch (e) {
             this.reportError(e);
@@ -95,7 +96,7 @@ export default class RestService {
         dispatch({type: "updating"});
         try {
             const response = await this.updateData(id, options);
-            dispatch({type: "updated", id, item: response.data});
+            dispatch({type: "updated", id, item: response.data, payload: options});
             this.afterChangeItem("updated");
         } catch (e) {
             this.reportError(e);
@@ -110,7 +111,7 @@ export default class RestService {
         dispatch({type: "deleting", id});
         try {
             const response = await this.deleteData(id, options);
-            dispatch({type: "deleted", id, item: response.data});
+            dispatch({type: "deleted", id, item: response.data, payload: options});
             this.afterChangeItem("deleted");
         } catch (e) {
             this.reportError(e);
@@ -122,6 +123,14 @@ export default class RestService {
     }
 
     afterChangeItem(eventType) {}
+
+
+    undoItem(options) {
+        const {restoreType, id, item, origPayload} = this.state.undoItem;
+        const payload = {...origPayload, body: item};
+        return (restoreType === "createItem")?
+            this[restoreType](payload) : this[restoreType](id, payload);
+    }
 
     mode = {
         isAdd: () => this.state.modeType === "add",

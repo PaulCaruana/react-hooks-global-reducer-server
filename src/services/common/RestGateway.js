@@ -12,24 +12,24 @@ const RestGateway = (endPoint) => {
     };
 
     const createItem = async (options) => {
-        const {data} = options;
+        const {body} = options;
         const config = {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
             },
         };
-        const response = await axios.post(`${endPoint}`, JSON.stringify(data), config);
+        const response = await axios.post(`${endPoint}`, JSON.stringify(body), config);
         return response;
     };
 
     const updateItem = async (id, options) => {
-        const {data} = options;
+        const {body} = options;
         const config = {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
             },
         };
-        const response = await axios.put(`${endPoint}/${id}`, JSON.stringify(data), config);
+        const response = await axios.put(`${endPoint}/${id}`, JSON.stringify(body), config);
         return response;
     };
 

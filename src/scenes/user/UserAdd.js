@@ -25,7 +25,7 @@ const UserAddForm = ({createUser, onCancel}) => {
                 onSubmit={event => {
                     event.preventDefault()
                     if (user.firstName && user.lastName) {
-                        const payload = {data: user};
+                        const payload = {body: user};
                         createUser(payload)
                         setUser(initialFormState)
                     }

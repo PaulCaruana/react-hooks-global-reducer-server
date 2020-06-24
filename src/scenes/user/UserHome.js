@@ -23,7 +23,6 @@ export default function List(props) {
     if (fetching) {
         return <div>Loading...</div>;
     }
-    console.log(hasUsers)
     if (completed && !hasUsers) {
         return <div>No users found</div>;
     }
