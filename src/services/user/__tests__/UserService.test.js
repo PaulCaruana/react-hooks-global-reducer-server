@@ -69,7 +69,7 @@ describe('User Service', () => {
         const payload = {
             body: user
         }
-        const response = await userService.createData(payload);
+        const response = await userService.createItem(payload);
         const createdUser = response.data;
         expect(createdUser.username).toBe("obrienhenleyiif");
     })
@@ -82,7 +82,7 @@ describe('User Service', () => {
         const payload = {
             body: user
         }
-        const response = await userService.createData(payload);
+        const response = await userService.createItem(payload);
         const createdUser = response.data;
         expect(createdUser.username).toBe("jonesj2");
     })

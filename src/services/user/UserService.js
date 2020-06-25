@@ -3,29 +3,29 @@ import RestGateway from "../common/RestGateway";
 
 class UserService extends RestService {
 
-    async createData(options) {
+    async createItem(options) {
         const {body: user} = options;
         const candidate = user.username ||
             `${user.lastName.toLowerCase()}${user.firstName.charAt(0).toLowerCase()}`
                 .replace(/[^a-zA-Z0-9]/g, "");
         user.username = await this.generateUsername(candidate);
-        return super.createData(options);
+        return super.createItem(options);
     }
 
 
-    async updateData(id, options) {
+    async updateItem(id, options) {
         const {body: user} = options;
         const candidate = user.username;
         const username = await this.generateUsername(candidate, id);
         if (candidate !== username) {
             throw new Error(`'${candidate}' user name already exists. Try '${username}' instead`)
         }
-        return super.updateData(id, options);
+        return super.updateItem(id, options);
     }
 
 
     async generateUsername(candidate, excludeId) {
-        const response = await super.fetchData();
+        const response = await super.fetchItems();
         const users = response.data;
         let found = users.some((user) =>
             user.username === candidate && user.id !== excludeId

@@ -43,7 +43,7 @@ export default class RestService {
             dispatch({type: "fetching"});
         }
         try {
-            const response = await this.fetchData(payload);
+            const response = await this.fetchItems(payload);
             this.fetchPayload = payload;
             dispatch({type: "fetched", items: response.data});
         } catch (e) {
@@ -51,7 +51,7 @@ export default class RestService {
         }
     }
 
-    fetchData(payload) {
+    fetchItems(payload) {
         return this.gateway.fetchItems(payload);
     }
 
@@ -67,7 +67,7 @@ export default class RestService {
     async onCreate(payload) {
         dispatch({type: "creating"});
         try {
-            const response = await this.createData(payload);
+            const response = await this.createItem(payload);
             dispatch({type: "created", item: response.data, payload: payload});
             this.onAfterChange("created");
         } catch (e) {
@@ -75,28 +75,28 @@ export default class RestService {
         }
     }
 
-    createData(payload) {
+    createItem(payload) {
         return this.gateway.createItem(payload);
     }
 
     async onRead(id, payload) {
         dispatch({type: "reading", id});
         try {
-            const response = await this.readData(id, payload);
+            const response = await this.readItem(id, payload);
             dispatch({type: "read", id, item: response.data});
         } catch (e) {
             this.onError(e);
         }
     }
 
-    readData(id, payload) {
+    readItem(id, payload) {
         return this.gateway.readItem(id, payload);
     }
 
     async onUpdate(id, payload) {
         dispatch({type: "updating"});
         try {
-            const response = await this.updateData(id, payload);
+            const response = await this.updateItem(id, payload);
             dispatch({type: "updated", id, item: response.data, payload: payload});
             this.onAfterChange("updated");
         } catch (e) {
@@ -104,14 +104,14 @@ export default class RestService {
         }
     }
 
-    updateData(id, payload) {
+    updateItem(id, payload) {
         return this.gateway.updateItem(id, payload);
     }
 
     async onDelete(id, payload) {
         dispatch({type: "deleting", id});
         try {
-            const response = await this.deleteData(id, payload);
+            const response = await this.deleteItem(id, payload);
             dispatch({type: "deleted", id, item: response.data, payload: payload});
             this.onAfterChange("deleted");
         } catch (e) {
@@ -119,7 +119,7 @@ export default class RestService {
         }
     }
 
-    deleteData(id, payload) {
+    deleteItem(id, payload) {
         return this.gateway.deleteItem(id, payload);
     }
 
