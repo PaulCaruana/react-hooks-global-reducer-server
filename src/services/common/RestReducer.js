@@ -6,7 +6,7 @@ const restReducer = (key = "id") => {
         updating: false,
         deleting: false,
         completed: false,
-        mode: false,
+        currentMode: false,
         items: [],
         undoItem: null,
         error: null
@@ -78,7 +78,7 @@ const restReducer = (key = "id") => {
         case "mode" :
             return {
                 ...state,
-                modeType: action.mode,
+                currentMode: action.mode,
             }
         case "selected" :
             return {

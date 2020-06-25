@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const RestGateway = (endPoint, addTimestamps= false, sortBy = null) => {
-    const fetchItem = async () => {
+    const fetchItems = async () => {
         const response = await axios.get(endPoint);
         if (sortBy) {
             const users = response.data || [];
@@ -67,7 +67,7 @@ const RestGateway = (endPoint, addTimestamps= false, sortBy = null) => {
         }
     };
 
-    return { fetchItem, createItem, readItem, updateItem, deleteItem, deleteItems };
+    return { fetchItems, createItem, readItem, updateItem, deleteItem, deleteItems };
 };
 
 export default RestGateway;

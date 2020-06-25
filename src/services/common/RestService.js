@@ -52,7 +52,7 @@ export default class RestService {
     }
 
     fetchData(payload) {
-        return this.gateway.fetchItem(payload);
+        return this.gateway.fetchItems(payload);
     }
 
     async toAddMode() {
@@ -134,11 +134,11 @@ export default class RestService {
     }
 
     mode = {
-        isAdd: () => this.state.modeType === "add",
+        isAdd: () => this.state.currentMode === "add",
         setAdd: () => dispatch({type: "mode", mode: "add"}),
-        isEdit: () => this.state.modeType === "edit",
+        isEdit: () => this.state.currentMode === "edit",
         setEdit: () => dispatch({type: "mode", mode: "edit"}),
-        isInitial: () => this.state.modeType === "initial",
+        isInitial: () => this.state.currentMode === "initial",
         setInitial: () => dispatch({type: "mode", mode: "initial"}),
     }
 
