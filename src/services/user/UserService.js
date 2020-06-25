@@ -23,7 +23,7 @@ class UserService extends RestService {
         return super.updateItem(id, options);
     }
 
-
+    /* Username = unique (last name + first name initial) */
     async generateUsername(candidate, excludeId) {
         const response = await super.fetchItems();
         const users = response.data;
