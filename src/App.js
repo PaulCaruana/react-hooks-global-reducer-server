@@ -1,5 +1,5 @@
 import React from 'react';
-import UserHome from "./scenes/user/UserHome";
+import UserHome from "./scenes/user";
 //import useCounter from "./services/counter/CounterService";
 //import Counters from "./scenes/counter/Counters";
 

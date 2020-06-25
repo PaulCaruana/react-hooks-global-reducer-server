@@ -11,7 +11,7 @@ export default class RestService {
         this.useService = this.useService.bind(this);
         this.actions = {
             [`fetch${itemsName}`]: this.fetchItems.bind(this),
-            [`refetch${itemsName}`]: (silent) => this.fetchItems(this.fetchOptions, silent),
+            [`refetch${itemsName}`]: (silent) => this.fetchItems(this.fetchPayload, silent),
             [`add${itemName}`]: this.addItem.bind(this),
             [`edit${itemName}`]: this.editItem.bind(this),
             [`create${itemName}`]: this.createItem.bind(this),
@@ -38,95 +38,95 @@ export default class RestService {
         return this.state;
     }
 
-    async fetchItems(options, silent) {
+    async fetchItems(payload, silent) {
         if (!silent) {
             dispatch({type: "fetching"});
         }
         try {
-            const response = await this.fetchData(options);
-            this.fetchOptions = options;
+            const response = await this.fetchData(payload);
+            this.fetchPayload = payload;
             dispatch({type: "fetched", items: response.data});
         } catch (e) {
             this.reportError(e);
         }
     }
 
-    fetchData(options) {
-        return this.gateway.fetchItem(options);
+    fetchData(payload) {
+        return this.gateway.fetchItem(payload);
     }
 
     async addItem() {
         this.mode.setAdd();
     }
 
-    async editItem(id, options) {
-        await this.readItem(id, options);
+    async editItem(id, payload) {
+        await this.readItem(id, payload);
         this.mode.setEdit();
     }
 
-    async createItem(options) {
+    async createItem(payload) {
         dispatch({type: "creating"});
         try {
-            const response = await this.createData(options);
-            dispatch({type: "created", item: response.data, payload: options});
+            const response = await this.createData(payload);
+            dispatch({type: "created", item: response.data, payload: payload});
             this.afterChangeItem("created");
         } catch (e) {
             this.reportError(e);
         }
     }
 
-    createData(options) {
-        return this.gateway.createItem(options);
+    createData(payload) {
+        return this.gateway.createItem(payload);
     }
 
-    async readItem(id, options) {
+    async readItem(id, payload) {
         dispatch({type: "reading", id});
         try {
-            const response = await this.readData(id, options);
+            const response = await this.readData(id, payload);
             dispatch({type: "read", id, item: response.data});
         } catch (e) {
             this.reportError(e);
         }
     }
 
-    readData(id, options) {
-        return this.gateway.readItem(id, options);
+    readData(id, payload) {
+        return this.gateway.readItem(id, payload);
     }
 
-    async updateItem(id, options) {
+    async updateItem(id, payload) {
         dispatch({type: "updating"});
         try {
-            const response = await this.updateData(id, options);
-            dispatch({type: "updated", id, item: response.data, payload: options});
+            const response = await this.updateData(id, payload);
+            dispatch({type: "updated", id, item: response.data, payload: payload});
             this.afterChangeItem("updated");
         } catch (e) {
             this.reportError(e);
         }
     }
 
-    updateData(id, options) {
-        return this.gateway.updateItem(id, options);
+    updateData(id, payload) {
+        return this.gateway.updateItem(id, payload);
     }
 
-    async deleteItem(id, options) {
+    async deleteItem(id, payload) {
         dispatch({type: "deleting", id});
         try {
-            const response = await this.deleteData(id, options);
-            dispatch({type: "deleted", id, item: response.data, payload: options});
+            const response = await this.deleteData(id, payload);
+            dispatch({type: "deleted", id, item: response.data, payload: payload});
             this.afterChangeItem("deleted");
         } catch (e) {
             this.reportError(e);
         }
     }
 
-    deleteData(id, options) {
-        return this.gateway.deleteItem(id, options);
+    deleteData(id, payload) {
+        return this.gateway.deleteItem(id, payload);
     }
 
     afterChangeItem(eventType) {}
 
 
-    undoItem(options) {
+    undoItem() {
         const {restoreType, id, item, origPayload} = this.state.undoItem;
         const payload = {...origPayload, body: item};
         return (restoreType === "createItem")?
