@@ -6,10 +6,16 @@ import sampleUsers from "./users.json";
 describe('User Service', () => {
 
     beforeEach(() => {
-        const scope = nock("http://localhost:5000")
+        nock("http://localhost:5000")
             .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
             .get('/users')
             .replyWithFile(200, __dirname + "/users.json", {
+                'Content-Type': 'application/json'
+            })
+        nock("http://localhost:5000")
+            .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
+            .post('/users')
+            .reply(200, (uri, requestBody) => requestBody, {
                 'Content-Type': 'application/json'
             })
     });
@@ -53,6 +59,32 @@ describe('User Service', () => {
     test("should generate correct user name when multiple with gap", async () => {
         const username = await userService.generateUsername("jonesj");
         expect(username).toBe("jonesj2");
+    })
+
+    test("should create data with the correct username", async () => {
+        const user = {
+            firstName: "Fred",
+            lastName: "O'Brien-Henley II"
+        }
+        const payload = {
+            body: user
+        }
+        const response = await userService.createData(payload);
+        const createdUser = response.data;
+        expect(createdUser.username).toBe("obrienhenleyiif");
+    })
+
+    test("should create data with the correct username when duplicate", async () => {
+        const user = {
+            firstName: "Julie",
+            lastName: "Jones"
+        }
+        const payload = {
+            body: user
+        }
+        const response = await userService.createData(payload);
+        const createdUser = response.data;
+        expect(createdUser.username).toBe("jonesj2");
     })
 
 });

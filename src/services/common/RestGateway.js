@@ -1,8 +1,12 @@
 import axios from "axios";
 
-const RestGateway = (endPoint) => {
+const RestGateway = (endPoint, addTimestamps= false, sortBy = null) => {
     const fetchItem = async () => {
         const response = await axios.get(endPoint);
+        if (sortBy) {
+            const users = response.data || [];
+            sortBy(users)
+        }
         return response;
     };
 
@@ -13,8 +17,10 @@ const RestGateway = (endPoint) => {
 
     const createItem = async (options) => {
         const {body} = options;
-        body.updatedAt = Date.now();
-        body.createdAt = Date.now();
+        if (addTimestamps) {
+            body.updatedAt = Date.now();
+            body.createdAt = Date.now();
+        }
         const config = {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
@@ -26,7 +32,9 @@ const RestGateway = (endPoint) => {
 
     const updateItem = async (id, options) => {
         const {body} = options;
-        body.updatedAt = Date.now();
+        if (addTimestamps) {
+            body.updatedAt = Date.now();
+        }
         const config = {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
