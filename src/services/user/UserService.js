@@ -55,6 +55,7 @@ class UserService extends RestService {
 const host = process.env.REACT_APP_SERVER_ENDPOINT || "http://localhost:5000";
 const sortByUpdatedAt = (users) => users.sort((a, b) => b.updatedAt - a.updatedAt);
 const userGateway = RestGateway(`${host}/users`, true, sortByUpdatedAt);
+
 export const userService = new UserService("user", userGateway);
 const {useService: useUserService} = userService
 export default useUserService;

@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import Box from '@material-ui/core/Box';
 import useUserService from "../../services/user/UserService";
-import UserTable from "./UserTable";
+import UserList from "./UserTable";
 import UserAdd from "./UserAdd";
 import UserEdit from "./UserEdit";
 
@@ -27,7 +27,7 @@ export default function List(props) {
     return (
         <Box display="flex" p={1} bgcolor="background.paper">
             <Box p={1} flex={1}>
-                <UserTable
+                <UserList
                     users={users}
                     refetchUsers={refetchUsers}
                     addUser={addUser}

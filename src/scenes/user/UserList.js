@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     },
 });
 
-const UserTable = ({
+const UserList = ({
         users, refetchUsers, addUser, editUser, deleteUser, undoUser, hasUsers
     }) => {
     const classes = useStyles();
@@ -76,4 +76,4 @@ const UserTable = ({
     );
 };
 
-export default UserTable
+export default UserList
