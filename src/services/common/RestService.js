@@ -10,16 +10,16 @@ export default class RestService {
         this.gateway = gateway;
         this.useService = this.useService.bind(this);
         this.actions = {
-            [`fetch${itemsName}`]: this.fetchItems.bind(this),
-            [`refetch${itemsName}`]: (silent) => this.fetchItems(this.fetchPayload, silent),
-            [`add${itemName}`]: this.addItem.bind(this),
-            [`edit${itemName}`]: this.editItem.bind(this),
-            [`create${itemName}`]: this.createItem.bind(this),
-            [`read${itemName}`]: this.readItem.bind(this),
-            [`update${itemName}`]: this.updateItem.bind(this),
-            [`delete${itemName}`]: this.deleteItem.bind(this),
-            [`undo${itemName}`]: this.undoItem.bind(this),
-            afterChange: this.afterChangeItem.bind(this),
+            [`fetch${itemsName}`]: this.doFetch.bind(this),
+            [`refetch${itemsName}`]: (silent) => this.doFetch(this.fetchPayload, silent),
+            [`add${itemName}`]: this.toAddMode.bind(this),
+            [`edit${itemName}`]: this.toEditMode.bind(this),
+            [`create${itemName}`]: this.onCreate.bind(this),
+            [`read${itemName}`]: this.onRead.bind(this),
+            [`update${itemName}`]: this.onUpdate.bind(this),
+            [`delete${itemName}`]: this.onDelete.bind(this),
+            [`undo${itemName}`]: this.onUndo.bind(this),
+            afterChange: this.onAfterChange.bind(this),
             mode: this.mode,
         }
     }
@@ -38,7 +38,7 @@ export default class RestService {
         return this.state;
     }
 
-    async fetchItems(payload, silent) {
+    async doFetch(payload, silent) {
         if (!silent) {
             dispatch({type: "fetching"});
         }
@@ -47,7 +47,7 @@ export default class RestService {
             this.fetchPayload = payload;
             dispatch({type: "fetched", items: response.data});
         } catch (e) {
-            this.reportError(e);
+            this.onError(e);
         }
     }
 
@@ -55,23 +55,23 @@ export default class RestService {
         return this.gateway.fetchItem(payload);
     }
 
-    async addItem() {
+    async toAddMode() {
         this.mode.setAdd();
     }
 
-    async editItem(id, payload) {
-        await this.readItem(id, payload);
+    async toEditMode(id, payload) {
+        await this.onRead(id, payload);
         this.mode.setEdit();
     }
 
-    async createItem(payload) {
+    async onCreate(payload) {
         dispatch({type: "creating"});
         try {
             const response = await this.createData(payload);
             dispatch({type: "created", item: response.data, payload: payload});
-            this.afterChangeItem("created");
+            this.onAfterChange("created");
         } catch (e) {
-            this.reportError(e);
+            this.onError(e);
         }
     }
 
@@ -79,13 +79,13 @@ export default class RestService {
         return this.gateway.createItem(payload);
     }
 
-    async readItem(id, payload) {
+    async onRead(id, payload) {
         dispatch({type: "reading", id});
         try {
             const response = await this.readData(id, payload);
             dispatch({type: "read", id, item: response.data});
         } catch (e) {
-            this.reportError(e);
+            this.onError(e);
         }
     }
 
@@ -93,14 +93,14 @@ export default class RestService {
         return this.gateway.readItem(id, payload);
     }
 
-    async updateItem(id, payload) {
+    async onUpdate(id, payload) {
         dispatch({type: "updating"});
         try {
             const response = await this.updateData(id, payload);
             dispatch({type: "updated", id, item: response.data, payload: payload});
-            this.afterChangeItem("updated");
+            this.onAfterChange("updated");
         } catch (e) {
-            this.reportError(e);
+            this.onError(e);
         }
     }
 
@@ -108,14 +108,14 @@ export default class RestService {
         return this.gateway.updateItem(id, payload);
     }
 
-    async deleteItem(id, payload) {
+    async onDelete(id, payload) {
         dispatch({type: "deleting", id});
         try {
             const response = await this.deleteData(id, payload);
             dispatch({type: "deleted", id, item: response.data, payload: payload});
-            this.afterChangeItem("deleted");
+            this.onAfterChange("deleted");
         } catch (e) {
-            this.reportError(e);
+            this.onError(e);
         }
     }
 
@@ -123,13 +123,13 @@ export default class RestService {
         return this.gateway.deleteItem(id, payload);
     }
 
-    afterChangeItem(eventType) {}
+    onAfterChange(eventType) {}
 
 
-    undoItem() {
+    onUndo() {
         const {restoreType, id, item, origPayload} = this.state.undoItem;
         const payload = {...origPayload, body: item};
-        return (restoreType === "createItem")?
+        return (restoreType === "onCreate")?
             this[restoreType](payload) : this[restoreType](id, payload);
     }
 
@@ -142,7 +142,7 @@ export default class RestService {
         setInitial: () => dispatch({type: "mode", mode: "initial"}),
     }
 
-    reportError(e) {
+    onError(e) {
         const message = e.message || "unknown error";
         const statusText = (e && e.response && e.response.statusText) || "";
         const detailedMessage = (e && e.response)? JSON.stringify(e.response) : message;

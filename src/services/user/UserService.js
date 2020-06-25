@@ -44,7 +44,7 @@ class UserService extends RestService {
         return candidate + cnt;
     }
 
-    afterChangeItem(eventType) {
+    onAfterChange(eventType) {
         this.mode.setInitial();
         if (eventType !== "deleted") {
             this.actions.refetchUsers();

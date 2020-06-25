@@ -41,9 +41,9 @@ const restReducer = (key = "id") => {
 
     const loadUndoItem = (eventType, id, item, payload) => {
         const restoreTypes = {
-            created: "deleteItem",
-            updated: "updateItem",
-            deleted: "createItem"
+            created: "onDelete",
+            updated: "onUpdate",
+            deleted: "onCreate"
         };
         const origPayload = payload || {};
         return {
