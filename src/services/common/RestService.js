@@ -3,15 +3,15 @@ import { dispatch, useGlobalState } from "../Store";
 export default class RestService {
     constructor(resource, gateway, itemName, itemsName) {
         this.resource = resource;
-        itemName = itemName || resource.charAt(0).toUpperCase() + resource.slice(1); //User
-        itemsName = itemsName || `${itemName}s`; //Users
-        const resourcesName = itemsName.toLowerCase(); //users
+        itemName = itemName || resource.charAt(0).toUpperCase() + resource.slice(1); // eg. User
+        itemsName = itemsName || `${itemName}s`; // eg. Users
+        const resourcesName = itemsName.toLowerCase(); // eg. users
         this.names = {itemName, itemsName, resourcesName};
         this.gateway = gateway;
         this.useService = this.useService.bind(this);
         this.actions = {
-            [`fetch${itemsName}`]: this.doFetch.bind(this),
-            [`refetch${itemsName}`]: (silent) => this.doFetch(this.fetchPayload, silent),
+            [`fetch${itemsName}`]: this.onFetch.bind(this),
+            [`refetch${itemsName}`]: (silent) => this.onFetch(this.fetchPayload, silent),
             [`add${itemName}`]: this.toAddMode.bind(this),
             [`edit${itemName}`]: this.toEditMode.bind(this),
             [`create${itemName}`]: this.onCreate.bind(this),
@@ -19,7 +19,7 @@ export default class RestService {
             [`update${itemName}`]: this.onUpdate.bind(this),
             [`delete${itemName}`]: this.onDelete.bind(this),
             [`undo${itemName}`]: this.onUndo.bind(this),
-            afterChange: this.onAfterChange.bind(this),
+            onAfterChange: this.onAfterChange.bind(this),
             mode: this.mode,
         }
     }
@@ -38,7 +38,7 @@ export default class RestService {
         return this.state;
     }
 
-    async doFetch(payload, silent) {
+    async onFetch(payload, silent) {
         if (!silent) {
             dispatch({type: "fetching"});
         }
@@ -124,7 +124,6 @@ export default class RestService {
     }
 
     onAfterChange(eventType) {}
-
 
     onUndo() {
         const {restoreType, id, item, origPayload} = this.state.undoItem;

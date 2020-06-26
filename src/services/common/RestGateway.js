@@ -1,62 +1,41 @@
 import axios from "axios";
 
-const RestGateway = (endPoint, addTimestamps= false, sortBy = null) => {
-    const fetchItems = async () => {
-        const response = await axios.get(endPoint);
-        if (sortBy) {
-            const users = response.data || [];
-            sortBy(users)
-        }
-        return response;
-    };
+export default class RestGateway {
+    constructor(endPoint) {
+        this.endPoint = endPoint;
+    }
 
-    const readItem = async (id) => {
-        const response = await axios.get(`${endPoint}/${id}`);
-        return response;
-    };
+    async fetchItems() {
+        return await axios.get(this.endPoint);
+    }
 
-    const createItem = async (options) => {
-        const {body} = options;
-        if (addTimestamps) {
-            body.updatedAt = Date.now();
-            body.createdAt = Date.now();
-        }
+    async createItem(payload) {
+        const {body} = payload;
         const config = {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
             },
         };
-        const response = await axios.post(`${endPoint}`, JSON.stringify(body), config);
-        return response;
-    };
+        return await axios.post(`${this.endPoint}`, JSON.stringify(body), config);
+    }
 
-    const updateItem = async (id, options) => {
-        const {body} = options;
-        if (addTimestamps) {
-            body.updatedAt = Date.now();
-        }
+    async readItem(id) {
+        return await axios.get(`${this.endPoint}/${id}`);
+    }
+
+    async updateItem(id, payload) {
+        const {body} = payload;
         const config = {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
             },
         };
-        const response = await axios.put(`${endPoint}/${id}`, JSON.stringify(body), config);
-        return response;
-    };
+        return await axios.put(`${this.endPoint}/${id}`, JSON.stringify(body), config);
+    }
 
-    const deleteItems = async (ids) => {
-        const promises = [];
-        for (const id of ids) {
-            const promise = deleteItem(id);
-            promises.push(promise);
-        }
-        const responses = axios.all(promises);
-        return responses;
-    };
-
-    const deleteItem = async (id) => {
+    async deleteItem(id) {
         try {
-            const response = await axios.delete(`${endPoint}/${id}`);
+            const response = await axios.delete(`${this.endPoint}/${id}`);
             response.data.id = id;
             return response;
         } catch (e) {
@@ -65,9 +44,6 @@ const RestGateway = (endPoint, addTimestamps= false, sortBy = null) => {
             }
             throw e;
         }
-    };
+    }
 
-    return { fetchItems, createItem, readItem, updateItem, deleteItem, deleteItems };
-};
-
-export default RestGateway;
+}

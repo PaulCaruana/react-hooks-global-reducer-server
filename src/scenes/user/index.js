@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import Box from '@material-ui/core/Box';
 import useUserService from "../../services/user/UserService";
-import UserList from "./UserTable";
+import UserList from "./UserList";
 import UserAdd from "./UserAdd";
 import UserEdit from "./UserEdit";
 

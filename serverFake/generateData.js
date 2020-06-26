@@ -3,7 +3,7 @@ module.exports = function() {
     var faker = require("faker");
     var _ = require("lodash");
     return {
-        users: _.times(3, function(id) {
+        users: _.times(20, function(id) {
             const firstName = faker.name.firstName();
             const lastName = faker.name.lastName();
             const rawUsername = `${lastName.toLowerCase()}${firstName.charAt(0).toLowerCase()}`;

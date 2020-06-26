@@ -1,30 +1,31 @@
 import RestService from "../common/RestService";
-import RestGateway from "../common/RestGateway";
+import UserGateway from "./UserGateway";
 
 class UserService extends RestService {
 
     async createItem(options) {
         const {body: user} = options;
+        /* Username = (last name + first name initial) without special chars eg. obriena */
         const candidate = user.username ||
             `${user.lastName.toLowerCase()}${user.firstName.charAt(0).toLowerCase()}`
                 .replace(/[^a-zA-Z0-9]/g, "");
-        user.username = await this.generateUsername(candidate);
+        user.username = await this.getUniqueUsername(candidate);
         return super.createItem(options);
     }
 
-
+    // todo: Validate in form on submit
     async updateItem(id, options) {
         const {body: user} = options;
         const candidate = user.username;
-        const username = await this.generateUsername(candidate, id);
+        const username = await this.getUniqueUsername(candidate, id);
         if (candidate !== username) {
             throw new Error(`'${candidate}' user name already exists. Try '${username}' instead`)
         }
         return super.updateItem(id, options);
     }
 
-    /* Username = unique (last name + first name initial) */
-    async generateUsername(candidate, excludeId) {
+    /* If not unique then add number suffix eg. smithd2 */
+    async getUniqueUsername(candidate, excludeId) {
         const response = await super.fetchItems();
         const users = response.data;
         let found = users.some((user) =>
@@ -52,10 +53,7 @@ class UserService extends RestService {
     }
 }
 
-const host = process.env.REACT_APP_SERVER_ENDPOINT || "http://localhost:5000";
-const sortByUpdatedAt = (users) => users.sort((a, b) => b.updatedAt - a.updatedAt);
-const userGateway = RestGateway(`${host}/users`, true, sortByUpdatedAt);
-
+const userGateway = new UserGateway();
 export const userService = new UserService("user", userGateway);
 const {useService: useUserService} = userService
 export default useUserService;

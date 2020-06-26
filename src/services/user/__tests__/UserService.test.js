@@ -37,27 +37,27 @@ describe('User Service', () => {
     });
 
     test("should generate correct unique user name", async () => {
-        const username = await userService.generateUsername("brownb");
+        const username = await userService.getUniqueUsername("brownb");
         expect(username).toBe("brownb");
     })
 
     test("should generate correct duplicate user name", async () => {
-        const username = await userService.generateUsername("hiltonp", 0);
+        const username = await userService.getUniqueUsername("hiltonp", 0);
         expect(username).toBe("hiltonp2");
     })
 
     test("should generate the same user name excluding same record", async () => {
-        const username = await userService.generateUsername("hiltonp", 7);
+        const username = await userService.getUniqueUsername("hiltonp", 7);
         expect(username).toBe("hiltonp");
     })
 
     test("should generate correct user name when multiple", async () => {
-        const username = await userService.generateUsername("smithd");
+        const username = await userService.getUniqueUsername("smithd");
         expect(username).toBe("smithd4");
     })
 
     test("should generate correct user name when multiple with gap", async () => {
-        const username = await userService.generateUsername("jonesj");
+        const username = await userService.getUniqueUsername("jonesj");
         expect(username).toBe("jonesj2");
     })
 
