@@ -14,8 +14,6 @@ const UserAddForm = ({createUser, onCancel}) => {
         setUser({...user, [name]: value})
     }
 
-
-
     return (
         <Box display="flex" css={{paddingTop: 8, paddingLeft: 16, paddingRight: 16,}} flexDirection="column" bgcolor="background.paper" component={Paper}>
             <Box p={1} flexGrow={1}>
@@ -27,7 +25,6 @@ const UserAddForm = ({createUser, onCancel}) => {
                     if (user.firstName && user.lastName) {
                         const payload = {body: user};
                         createUser(payload)
-                        setUser(initialFormState)
                     }
                 }}
             >

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Box from '@material-ui/core/Box';
 import useUserService from "../../services/user/UserService";
 import UserList from "./UserList";
@@ -7,15 +7,9 @@ import UserEdit from "./UserEdit";
 
 export default function List(props) {
     const {
-        mode, fetchUsers, refetchUsers, fetching, hasUsers, completed, addUser, editUser,
-        createUser, updateUser, deleteUser, undoUser, undoUserExists, users, currentUser, error
-    } = useUserService();
-
-    useEffect(() => {
-        fetchUsers();
-    }, [fetchUsers]);
-
-    const onCancel = () => mode.setInitial();
+        refetchUsers, fetching, hasUsers, completed, addUser, editUser, createUser, mode,
+        updateUser, deleteUser, undoUser, undoUserExists, users, currentUser, onCancel, error
+    } = useUserService("onLoadFetch");
 
     if (error) {
         return <div>Error: {error}, please reload</div>;

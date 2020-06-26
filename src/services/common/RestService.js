@@ -1,3 +1,5 @@
+import MicroEmitter from "micro-emitter";
+import {useEffect} from "react";
 import { dispatch, useGlobalState } from "../Store";
 
 export default class RestService {
@@ -8,6 +10,7 @@ export default class RestService {
         const resourcesName = itemsName.toLowerCase(); // eg. users
         this.names = {itemName, itemsName, resourcesName};
         this.gateway = gateway;
+        this.eventEmitter = new MicroEmitter();
         this.useService = this.useService.bind(this);
         this.actions = {
             [`fetch${itemsName}`]: this.onFetch.bind(this),
@@ -19,12 +22,15 @@ export default class RestService {
             [`update${itemName}`]: this.onUpdate.bind(this),
             [`delete${itemName}`]: this.onDelete.bind(this),
             [`undo${itemName}`]: this.onUndo.bind(this),
+            onLoadFetch: this.onLoadFetch.bind(this),
             onAfterChange: this.onAfterChange.bind(this),
-            mode: this.mode,
+            onCancel: this.onCancel.bind(this),
+            mode: this.mode
         }
+        this.eventEmitter.on("onLoadFetch", this.actions.onLoadFetch);
     }
 
-    useService() {
+    useService(event, payload) {
         const [state] = useGlobalState(this.resource);
         const {itemName, itemsName, resourcesName} = this.names;
         this.state = {
@@ -34,6 +40,9 @@ export default class RestService {
             [`current${itemName}`]: state.currentItem,
             [`undo${itemName}Exists`]: state.undoItem !== null,
             ...this.actions
+        }
+        if (event) {
+            this.eventEmitter.emit(event, payload);
         }
         return this.state;
     }
@@ -53,6 +62,12 @@ export default class RestService {
 
     fetchItems(payload) {
         return this.gateway.fetchItems(payload);
+    }
+
+    async onLoadFetch(payload) {
+        useEffect(() => {
+            this.onFetch(payload)
+        }, [payload]);
     }
 
     async toAddMode() {
@@ -124,6 +139,8 @@ export default class RestService {
     }
 
     onAfterChange(eventType) {}
+
+    onCancel(eventType) {}
 
     onUndo() {
         const {restoreType, id, item, origPayload} = this.state.undoItem;

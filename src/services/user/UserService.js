@@ -51,6 +51,10 @@ class UserService extends RestService {
             this.actions.refetchUsers();
         }
     }
+
+    onCancel() {
+        this.mode.setInitial();
+    }
 }
 
 const userGateway = new UserGateway();
