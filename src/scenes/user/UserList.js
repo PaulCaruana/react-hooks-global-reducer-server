@@ -15,6 +15,8 @@ import Undo from "@material-ui/icons/Undo";
 import Refresh from "@material-ui/icons/Refresh";
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from "@material-ui/core/IconButton";
+import { CircularProgress } from '@material-ui/core';
+
 
 const useStyles = makeStyles({
     table: {
@@ -23,7 +25,7 @@ const useStyles = makeStyles({
 });
 
 const UserList = ({
-        users, refetchUsers, addUser, editUser, deleteUser, undoUser, hasUsers
+        users, refetchUsers, addUser, editUser, deleteUser, undoUser, hasUsers, completed
     }) => {
     const classes = useStyles();
     const title = (hasUsers)? "Users" : "No users found";
@@ -35,8 +37,11 @@ const UserList = ({
                     <h3>{title}</h3>
                 </Box>
                 <Box p={1} alignSelf="center">
-                    <Tooltip title="Refresh users" aria-label="refresh">
-                        <IconButton color="primary" onClick={refetchUsers}><Refresh/></IconButton>
+                    <Tooltip title={"Refresh users"} aria-label="refresh">
+                        <IconButton color="primary" onClick={refetchUsers} disabled={!completed}>
+                            {!completed && <CircularProgress size={18} thickness={5} variant="indeterminate" disableShrink={true}/>}
+                            {completed && <Refresh/>}
+                        </IconButton>
                     </Tooltip>
                     {undoUser && <Tooltip title="Undo last change" aria-label="undo">
                         <IconButton color="primary" onClick={undoUser}><Undo/></IconButton>

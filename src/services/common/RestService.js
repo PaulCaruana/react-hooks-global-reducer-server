@@ -14,7 +14,7 @@ export default class RestService {
         this.useService = this.useService.bind(this);
         this.actions = {
             [`fetch${itemsName}`]: this.onFetch.bind(this),
-            [`refetch${itemsName}`]: (silent) => this.onFetch(this.fetchPayload, silent),
+            [`refetch${itemsName}`]: () => this.onFetch(this.fetchPayload),
             [`add${itemName}`]: this.toAddMode.bind(this),
             [`edit${itemName}`]: this.toEditMode.bind(this),
             [`create${itemName}`]: this.onCreate.bind(this),
@@ -47,10 +47,8 @@ export default class RestService {
         return this.state;
     }
 
-    async onFetch(payload, silent) {
-        if (!silent) {
-            dispatch({type: "fetching"});
-        }
+    async onFetch(payload) {
+        dispatch({type: "fetching"});
         try {
             const response = await this.fetchItems(payload);
             this.fetchPayload = payload;

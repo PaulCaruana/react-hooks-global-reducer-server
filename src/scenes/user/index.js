@@ -7,15 +7,12 @@ import UserEdit from "./UserEdit";
 
 export default function List(props) {
     const {
-        refetchUsers, fetching, hasUsers, completed, addUser, editUser, createUser, mode,
+        refetchUsers, hasUsers, completed, addUser, editUser, createUser, mode,
         updateUser, deleteUser, undoUser, undoUserExists, users, currentUser, onCancel, error
     } = useUserService("onLoadFetch");
 
     if (error) {
         return <div>Error: {error}, please reload</div>;
-    }
-    if (fetching) {
-        return <div>Loading...</div>;
     }
 
     return (
@@ -29,6 +26,7 @@ export default function List(props) {
                     deleteUser={deleteUser}
                     undoUser={undoUserExists && undoUser}
                     hasUsers={!completed || hasUsers}
+                    completed={completed}
                 />
             </Box>
             <Box p={1} flex={1}>
