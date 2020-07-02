@@ -2,6 +2,9 @@
 
 ## Stage II Example
 
+Redux without the drawbacks. No plumbling code, pure functions, loosely coupled component
+with SOLID design principles.
+
 ### Background and design
 
 This example code demonstrates how to create a simple fully functional CRUD API 
