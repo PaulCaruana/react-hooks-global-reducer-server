@@ -77,19 +77,19 @@ yarn start
 ```
  
  ## Running the tests
- ```
- yarn test
- ```
+```
+yarn test
+```
   
  ## Build
- ```
- yarn build
- ```
+```
+yarn build
+```
 
- ## Author
+## Author
  
- **Paul Caruana** 
+**Paul Caruana**
  
- ## Demo
+## Demo
  
  TBA
