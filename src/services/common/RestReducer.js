@@ -1,34 +1,47 @@
-const restReducer = (key = "id") => {
-    const initialState = {
-        fetching: false,
-        creating: false,
-        reading: false,
-        updating: false,
-        deleting: false,
-        completed: false,
-        currentMode: false,
-        items: [],
-        undoItem: null,
-        error: null
+export default class RestReducer {
+    constructor(key) {
+        this.key = key;
+        this.isMatch = this.isMatch.bind(this);
+        this.getItemValue = this.getItemValue.bind(this);
+        this.findItem = this.findItem.bind(this);
+        this.deleteItem = this.deleteItem.bind(this);
+        this.loadUndoItem = this.loadUndoItem.bind(this);
+        this.reducer = this.reducer.bind(this);
+        this.initialState = {
+            fetching: false,
+            creating: false,
+            reading: false,
+            updating: false,
+            deleting: false,
+            completed: false,
+            currentMode: false,
+            items: [],
+            undoItem: null,
+            error: null
+        }
     }
 
-    const isMatch = (item, id) => {
+    isMatch(item, id) {
         if (id === undefined) {
             throw new Error("Action must contain id");
         }
-        const itemId = item[key];
+        const itemId = this.getItemValue(item);
         if (itemId === undefined) {
             throw new Error("Item key not found");
         }
         return itemId.toString() === id.toString();
-    };
-
-    const findItem = (items, id) => {
-        return items.find(current => isMatch(current, id));
     }
 
-    const deleteItem = (items, id) => {
-        const deleteIndex = items.findIndex(current => isMatch(current, id));
+    getItemValue(item) {
+        return item[this.key];
+    }
+
+    findItem(items, id) {
+        return items.find(current => this.isMatch(current, id));
+    }
+
+    deleteItem(items, id) {
+        const deleteIndex = items.findIndex(current => this.isMatch(current, id));
         if (deleteIndex === -1) {
             return items;
         }
@@ -37,9 +50,9 @@ const restReducer = (key = "id") => {
             ...items.slice(deleteIndex + 1)
         ];
         return results;
-    };
+    }
 
-    const loadUndoItem = (eventType, id, item, payload) => {
+    loadUndoItem(eventType, id, item, payload) {
         const restoreTypes = {
             created: "onDelete",
             updated: "onUpdate",
@@ -55,7 +68,7 @@ const restReducer = (key = "id") => {
         };
     }
 
-    const reducer = (state = initialState, action) => {
+    reducer(state = this.initialState, action) {
         const {type, items: nextItems, id, item, payload, error} = action;
         const {items: currentItems} = state;
         const baseState = {...state, completed: false, error: null}
@@ -83,7 +96,7 @@ const restReducer = (key = "id") => {
         case "selected" :
             return {
                 ...state,
-                selected: currentItems.find(current => isMatch(current, id)),
+                selected: currentItems.find(current => this.isMatch(current, id)),
             }
         case "clearSelected" :
             return {
@@ -103,7 +116,7 @@ const restReducer = (key = "id") => {
                     ...currentItems,
                 ],
                 hasItems: true,
-                undoItem: loadUndoItem("created", item[key], item, payload),
+                undoItem: this.loadUndoItem("created", this.getItemValue(item), item, payload),
                 currentItem: item,
                 creating: false,
                 completed: true,
@@ -111,13 +124,13 @@ const restReducer = (key = "id") => {
         case "reading":
             return {
                 ...baseState,
-                currentItem: currentItems.find(current => (isMatch(current, id) ? item : current)),
+                currentItem: currentItems.find(current => (this.isMatch(current, id) ? item : current)),
                 reading: true,
             }
         case "read":
             return {
                 ...baseState,
-                items: currentItems.map(current => (isMatch(current, id) ? item : current)),
+                items: currentItems.map(current => (this.isMatch(current, id) ? item : current)),
                 currentItem: item,
                 reading: false,
                 completed: true,
@@ -130,8 +143,8 @@ const restReducer = (key = "id") => {
         case "updated":
             return {
                 ...baseState,
-                undoItem: loadUndoItem("updated", id, findItem(currentItems, id), payload),
-                items: currentItems.map(current => (isMatch(current, id) ? item : current)),
+                undoItem: this.loadUndoItem("updated", id, this.findItem(currentItems, id), payload),
+                items: currentItems.map(current => (this.isMatch(current, id) ? item : current)),
                 currentItem: item,
                 updating: false,
                 completed: true,
@@ -139,8 +152,8 @@ const restReducer = (key = "id") => {
         case "deleting":
             return {
                 ...baseState,
-                undoItem: loadUndoItem("deleted", id, findItem(currentItems, id), payload),
-                items: deleteItem(currentItems, id),
+                undoItem: this.loadUndoItem("deleted", id, this.findItem(currentItems, id), payload),
+                items: this.deleteItem(currentItems, id),
                 get hasItems() {return this.items && this.items.length > 0},
                 deleting: true,
             };
@@ -152,15 +165,11 @@ const restReducer = (key = "id") => {
             };
         case "error" :
             return {
-                ...initialState,
+                ...this.initialState(),
                 error
             }
         default:
             return state;
         }
-
     }
-
-    return {reducer, initialState};
 }
-export default restReducer;

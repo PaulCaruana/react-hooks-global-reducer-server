@@ -13,16 +13,16 @@
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "faker": "^4.1.0",
+    "json-server": "^0.16.1",
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/react-hooks": "^3.3.0",
     "@testing-library/user-event": "^7.1.2",
-    "faker": "^4.1.0",
-    "json-server": "^0.16.1",
-    "lodash": "^4.17.15",
     "nock": "^12.0.3",
     "react-test-renderer": "^16.13.1"
   },

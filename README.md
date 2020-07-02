@@ -1,71 +1,86 @@
- Stage 1: Global State with fetch - https://codesandbox.io/s/3jxcd
+# React Redux with hooks CRUD example
 
+## Stage II Example
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Background and design
 
-## Available Scripts
+This example code demonstrates how to create a simple fully functional CRUD API 
+application using Redux with hooks. 
 
-In the project directory, you can run:
+This purpose of this code is to show how to
+develop a React application without many of the pitfalls Redux imposes as well as 
+using good design techniques. The following constraints and design practices 
+have been employed:
 
-### `yarn start`
+- Using hooks for both Global and local state with no need for Providers 
+or passing state to unnecessary components.
+- No Redux boilerplate code is required, no React classes and no HOC are required. 
+Just pure functional components.
+- Separation of data from presentation layer. This means that container 
+and components are Redux agnostic and contain no Redux (such as 'dispatch') statements.
+- Provide the advantages of Redux where processing is predictable as well as 
+enforcing immutability which makes code efficient and maintainable.
+- Provide middleware used for debugging and other middleware such as react-thunk and 
+saving state to local storage. See Daishi Kato's react-hooks-global-state middleware
+examples at https://github.com/dai-shi/react-hooks-global-state/tree/master/examples
+for further examples.
+- As the state is immutable and predictable, it is easy to test changes.
+Accordingly, provide examples on how to unit test both Redux and standalone code. 
+- Debugging, give to ability to test code with Redux time travel extension as well as showing
+Redux state to console
+- As state is stored centrally, give an example on of Optimistic rendering where data can be 
+shown before the data is retrieved from an API or database.
+- As state is immutable, show how actions can undone or redone back to a particular state. 
+For example, a delete action can be restore by adding the deleted data back.
+- As per MVC framework separate view, business logic and data access.
+As part of this as well loosely coupling components. 
+This design principle promotes separation of concerns that makes code easier to understand and test.
+- Promote re-use by providing tested generic / abstract and encapulated classes that can be overridden and extended.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Application
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+A simple fetch and CRUD client / server application. The purpose of application is to demonstrate React Redux
+design and the Server is put in place to demonstrate how REST api can be called from the React client. The server 
+uses the NPM package json-server to set up test data that can be accessed by REST API calls. 
 
-### `yarn test`
+The test data contains 
+"firstName", "lastName" and a generated "username" which is made up lastName + first initial of firstName. 
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Upon creating a new user if the username already exists a incremented digit starting from 2 is suffixed 
+to username.
+If updating a username that already exists then the application will throw an error.
 
-### `yarn build`
+## Prerequisites
+ 
+Please ensure that the latest version of NPM and NodeJs are installed 
+ 
+ ## Installing
+ 
+```
+ yarn 
+```
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+ ## Tailoring
+ 
+ - If you want to change the number of generated users open "generateData.js" and default users from 20
+ - If you to simulate load time open package.json, go to "start:server" and change the --delay=0 to adjust 
+ the delay in milli-seconds.   
+ 
+## Run application
+ 
+```
+yarn start
+```
+ 
+ ## Running the tests
+ ```
+ yarn test
+ ```
+ 
+ ## Author
+ 
+ **Paul Caruana** 
+ 
+ ## Demo
+ 
+ TBA
