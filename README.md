@@ -2,8 +2,12 @@
 
 ## Stage II Example
 
-Redux without the drawbacks. No plumbling code, pure functions, loosely coupled components
+Fully functional Redux without the drawbacks. No plumbling code, pure functions, loosely coupled components
 with SOLID design principles.
+
+
+For a simpler CRUD client only version with simulated asyncronous calls please refer to Stage I example 
+of this code at https://github.com/PaulCaruana/react-hooks-global-reducer.
 
 ### Background and design
 
@@ -17,18 +21,18 @@ or passing state to unnecessary components.
 - No Redux boilerplate code, no React classes and no HOC are required. 
 Just pure functional components.
 - Separation of data from presentation layer. This means that containers 
-and components are Redux agnostic and contain no Redux statements (such as 'dispatch') .
+and components are Redux agnostic and contain no Redux statements (such as 'dispatch').
 - Provide the advantages of Redux design ensuring processing is predictable in addition to
 enforcing immutability which makes code efficient and maintainable.
-- Provide middleware for debugging purposes in dev. Also, add other middleware such as react-thunk and 
+- Provide middleware for debugging when developing. In addition, add other middleware such as react-thunk and 
 saving state to local storage. See Daishi Kato's react-hooks-global-state middleware
 examples at https://github.com/dai-shi/react-hooks-global-state/tree/master/examples
 for further examples.
 - Provide examples on how to unit test both Redux and standalone code. 
-- Debugging in development, give to ability to test code with Redux time travel browser extension as well as showing
-Redux state to console
-- As state is stored centrally, give an example on of Optimistic rendering where data can be 
-shown before the data is retrieved from an API or database.
+- Debugging in development, give to ability to test code with Redux time travel browser extension as well as logging
+Redux state to console.
+- As state is stored centrally, give an example on of Optimistic rendering. That is, data can be 
+shown from updated Redux state before the data is retrieved from an API or database.
 - As state is immutable, show how actions can undone or redone back to a particular state. 
 For example, a delete action can be restore by adding the deleted data back.
 - As per MVC framework separate view, business logic and data access.
@@ -50,21 +54,21 @@ On the add user page, if the username already exists a incremented digit startin
 to username.
 If updating a username that already exists, the application will throw an error.
 
+## Tailoring
+ 
+ - If you want to change the number of generated users, open "generateData.js" and change the default users from 20
+ - If you to simulate load time, open package.json, go to "start:server" line and change the --delay=0 to adjust 
+ the delay in milli-seconds.   
+
 ## Prerequisites
  
 Please ensure that the latest version of NPM and NodeJs are installed 
  
- ## Installing
+## Installing
  
 ```
- yarn 
+yarn 
 ```
-
- ## Tailoring
- 
- - If you want to change the number of generated users open "generateData.js" and default users from 20
- - If you to simulate load time open package.json, go to "start:server" and change the --delay=0 to adjust 
- the delay in milli-seconds.   
  
 ## Run application
  
