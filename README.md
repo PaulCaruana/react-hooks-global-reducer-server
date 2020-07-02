@@ -2,16 +2,13 @@
 
 ## Stage II Example
 
-Redux without the drawbacks. No plumbling code, pure functions, loosely coupled component
+Redux without the drawbacks. No plumbling code, pure functions, loosely coupled components
 with SOLID design principles.
 
 ### Background and design
 
-This example code demonstrates how to create a simple fully functional CRUD API 
-application using Redux with hooks. 
-
 This purpose of this code is to show how to
-develop a React application without many of the pitfalls Redux imposes as well as 
+develop a simple to use CRUD API React application without many of the pitfalls Redux imposes as well as 
 using good design techniques. The following constraints and design practices 
 have been employed:
 
@@ -38,7 +35,9 @@ For example, a delete action can be restore by adding the deleted data back.
 - As per MVC framework separate view, business logic and data access.
 As part of this as well loosely coupling components. 
 This design principle promotes separation of concerns that makes code easier to understand and test.
-- Promote re-use by providing tested generic / abstract and encapulated classes that can be overridden and extended.
+- Promote re-use by providing tested generic / abstract and encapulated classes that can be overridden 
+and extended.
+- Above all, the code must be design and structured to be easy to create and maintain.
 
 ## Application
 
