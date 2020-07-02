@@ -80,7 +80,12 @@ yarn start
  ```
  yarn test
  ```
- 
+  
+ ## Build
+ ```
+ yarn build
+ ```
+
  ## Author
  
  **Paul Caruana** 
