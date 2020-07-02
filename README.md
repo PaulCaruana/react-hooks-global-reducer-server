@@ -41,15 +41,14 @@ and extended.
 
 A simple fetch and CRUD client / server application. The purpose of this application is to demonstrate React Redux
 design solution which meets the criteria above. The Server is put in place to demonstrate how REST api calls from React
-only. FYI, the server 
-uses the NPM package json-server to set up test data that can be accessed by REST API calls. 
+only. FYI, the server uses the NPM package json-server to simulate client based REST API calls. 
 
-The test data contains 
+The test data generated on the server contains 
 "firstName", "lastName" and a generated "username" which is made up lastName + first initial of firstName. 
 
-Upon creating a new user if the username already exists a incremented digit starting from 2 is suffixed 
+On the add user page, if the username already exists a incremented digit starting from 2 is suffixed 
 to username.
-If updating a username that already exists then the application will throw an error.
+If updating a username that already exists, the application will throw an error.
 
 ## Prerequisites
  
